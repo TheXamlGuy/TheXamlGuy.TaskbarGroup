@@ -24,10 +24,6 @@ namespace TheXamlGuy.TaskbarGroup.Flyout.Controls
             TemplateSettings = new TaskbarButtonFlyoutTemplateSettings();
         }
 
-        public event EventHandler<object> Closed;
-
-        public event EventHandler<object> Opened;
-
         public TaskbarButtonFlyoutTemplateSettings TemplateSettings
         {
             get => (TaskbarButtonFlyoutTemplateSettings)GetValue(TemplateSettingsProperty);

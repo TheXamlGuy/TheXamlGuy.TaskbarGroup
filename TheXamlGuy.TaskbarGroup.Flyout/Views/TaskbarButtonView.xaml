@@ -2,7 +2,7 @@
     x:Class="TheXamlGuy.TaskbarGroup.Flyout.TaskbarButtonView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Border>
+    <Border Background="Transparent">
         <ContentControl
             Margin="12"
             HorizontalContentAlignment="Stretch"

@@ -78,6 +78,7 @@
     <Compile Include="Controls\TaskbarButtonFlyoutTemplateSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\TaskbarButtonFlyout.cs" />
+    <Compile Include="Views\TaskbarButtonGroupDropHandler.cs" />
     <Compile Include="Views\TaskbarButtonGroupItemViewModel.cs" />
     <Compile Include="Views\TaskbarButtonGroupView.xaml.cs">
       <DependentUpon>TaskbarButtonGroupView.xaml</DependentUpon>
@@ -118,6 +119,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.8.0-prerelease.220118001</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
+      <Version>2.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

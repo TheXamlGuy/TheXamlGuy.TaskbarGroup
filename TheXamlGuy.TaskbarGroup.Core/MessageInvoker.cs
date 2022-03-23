@@ -2,7 +2,7 @@
 
 namespace TheXamlGuy.TaskbarGroup.Core
 {
-    public class EventAggregatorInvoker : IEventAggregatorInvoker
+    public class MessageInvoker : IMessageInvoker
     {
         public void Invoke<TMessage>(object target, TMessage message, MethodInfo methodInfo)
         {

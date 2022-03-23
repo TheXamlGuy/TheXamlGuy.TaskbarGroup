@@ -8,6 +8,7 @@ namespace TheXamlGuy.TaskbarGroup.Flyout
             IServiceFactory serviceFactory,
             IDisposer disposer) : base(messenger, serviceFactory, disposer)
         {
+
         }
 
         public string Name { get; set; }

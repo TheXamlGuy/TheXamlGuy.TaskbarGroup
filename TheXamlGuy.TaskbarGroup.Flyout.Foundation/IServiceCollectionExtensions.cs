@@ -12,7 +12,8 @@ namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
             return serviceCollection
                 .AddSingleton<TemplateSelector>()
                 .AddSingleton<IDataTemplateCollection>(new DataTemplateCollection(new Dictionary<Type, Type>()))
-                .AddSingleton<DataTemplateFactory>();
+                .AddSingleton<DataTemplateFactory>()
+                .AddSingleton<DropTarget>();
         }
     }
 }

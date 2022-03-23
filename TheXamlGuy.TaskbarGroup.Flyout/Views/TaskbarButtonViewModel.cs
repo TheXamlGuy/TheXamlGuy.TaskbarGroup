@@ -9,7 +9,8 @@ namespace TheXamlGuy.TaskbarGroup.Flyout
             IServiceFactory serviceFactory,
             IDisposer disposer,
             TemplateSelector templateSelector,
-            TaskbarButtonGroupViewModel taskbarButtonGroupViewModel) : base(messenger, serviceFactory, disposer)
+            TaskbarButtonGroupViewModel taskbarButtonGroupViewModel) 
+            : base(messenger, serviceFactory, disposer)
         {
             TemplateSelector = templateSelector;
             TaskbarButtonGroupViewModel = taskbarButtonGroupViewModel;

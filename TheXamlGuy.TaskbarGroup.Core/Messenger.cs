@@ -7,12 +7,12 @@ namespace TheXamlGuy.TaskbarGroup.Core
 {
     public class Messenger : IMessenger
     {
-        public IEventAggregatorInvoker invoker;
+        public IMessageInvoker invoker;
         private readonly ConcurrentDictionary<Type, object> subjects = new();
 
         private IScheduler dispatcher;
 
-        public Messenger(IEventAggregatorInvoker invoker)
+        public Messenger(IMessageInvoker invoker)
         {
             var synchronizationContext = SynchronizationContext.Current;
             if (synchronizationContext is null) throw new NullReferenceException(nameof(synchronizationContext));

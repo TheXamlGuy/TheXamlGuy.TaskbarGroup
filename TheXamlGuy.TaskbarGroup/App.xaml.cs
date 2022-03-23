@@ -36,11 +36,12 @@ namespace TheXamlGuy.TaskbarGroup
                 .AddRequiredCore()
                 .AddRequiredFoundation()
                 .AddRequiredFlyoutFoundation()
-                .AddTransient<IMessageHandler<TaskbarButtonFlyoutActivation>, TaskbarButtonFlyoutActivationHandler>()
+                .AddHandler<TaskbarButtonFlyoutActivationHandler>()
                 .AddSingleton<TaskbarButtonFlyoutWindow>()
                 .AddTransient<TaskbarButtonView>()
                 .AddTransient<TaskbarButtonViewModel>()
                 .AddTransient<TaskbarButtonGroupView>()
+                .AddAsyncHandler<TaskbarButtonGroupDropHandler>()
                 .AddTransient<TaskbarButtonGroupViewModel>();
         }
     }

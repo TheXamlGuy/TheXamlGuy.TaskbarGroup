@@ -40,6 +40,7 @@
         {
             return HandleAsync<TResponse>(new TRequest(), parameters);
         }
+
         public Task HandleAsync(object request, CancellationToken cancellationToken, params object[] parameters)
         {
             return GetHandler(typeof(IAsyncMessageHandler<>).MakeGenericType(request.GetType()), parameters)

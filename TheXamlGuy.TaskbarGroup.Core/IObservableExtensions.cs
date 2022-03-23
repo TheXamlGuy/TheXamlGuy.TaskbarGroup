@@ -6,7 +6,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
 
     public static class IObservableExtensions
     {
-        public static IDisposable WeakSubscribe<TMessage>(this IObservable<TMessage> observable, IEventAggregatorInvoker invoker, Action<TMessage> actionDelegate)
+        public static IDisposable WeakSubscribe<TMessage>(this IObservable<TMessage> observable, IMessageInvoker invoker, Action<TMessage> actionDelegate)
         {
             var methodInfo = actionDelegate.Method;
             var weakReference = new WeakReference(actionDelegate.Target);

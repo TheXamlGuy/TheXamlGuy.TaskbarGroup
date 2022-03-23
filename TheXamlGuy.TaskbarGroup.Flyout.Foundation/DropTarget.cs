@@ -1,55 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xaml.Interactivity;
+using System;
+using TheXamlGuy.TaskbarGroup.Core;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
 using Windows.UI.Xaml;
 
 namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
 {
-    public class DropTarget
+    public class DropTarget : Behavior<FrameworkElement>
     {
-        public void Initialize(UIElement target)
+        public static readonly DependencyProperty MediatorProperty =
+            DependencyProperty.Register(nameof(Mediator),
+                typeof(IMediator), typeof(DropTarget),
+                new PropertyMetadata(null));
+
+        public IMediator Mediator
         {
-            target.DragOver += OnDragOver;
-            target.Drop += OnDrop;
+            get => (IMediator)GetValue(MediatorProperty);
+            set => SetValue(MediatorProperty, value);
         }
 
-        private async void OnDrop(object sender, DragEventArgs args)
+        protected override void OnAttached()
         {
-            if (args.DataView.Contains(StandardDataFormats.StorageItems))
+            AssociatedObject.DragOver -= OnDragOver;
+            AssociatedObject.Drop -= OnDrop;
+
+            AssociatedObject.DragOver += OnDragOver;
+            AssociatedObject.Drop += OnDrop;
+
+            base.OnAttached();
+        }
+
+        private void OnDrop(object sender, DragEventArgs args)
+        {
+            if (Mediator is not null)
             {
-                var items = await args.DataView.GetStorageItemsAsync();
-                if (items.Count > 0)
-                {
-                    foreach (var storageItem in items)
-                    {
-                        if (storageItem is StorageFile storageFile)
-                        {
-                            if (storageFile.Path is { Length: > 0 })
-                            {
+                var dropMessageType = typeof(Drop<>).MakeGenericType(sender.GetType());
+                var dropMessage = Activator.CreateInstance(dropMessageType, args);
 
-                            }
-                            else
-                            {
-                                var properties = await storageFile.Properties.RetrievePropertiesAsync(new List<string>
-                                {
-                                    "System.AppUserModel.ID"
-                                });
-
-                                var appUserModelId = properties["System.AppUserModel.ID"];
-                                if (appUserModelId is not null)
-                                {
-
-                                }
-                            }
-                        }
-
-                        if (storageItem is StorageFolder storageFolder)
-                        {
-
-                        }
-                    }
-                }
+                Mediator.HandleAsync(dropMessage);            
             }
         }
 
