@@ -122,10 +122,12 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Drag.cs" />
     <Compile Include="DropTarget.cs" />
     <Compile Include="DataTemplateFactory.cs" />
     <Compile Include="Drop.cs" />
     <Compile Include="IDataTemplateFactory.cs" />
+    <Compile Include="IDragHandler.cs" />
     <Compile Include="IDropHandler.cs" />
     <Compile Include="IServiceCollectionExtensions.cs" />
     <Compile Include="IWindowPrivate.cs" />

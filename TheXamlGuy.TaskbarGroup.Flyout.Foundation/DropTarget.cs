@@ -30,20 +30,34 @@ namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
             base.OnAttached();
         }
 
-        private void OnDrop(object sender, DragEventArgs args)
+        private object CreateDragMessage(object sender, DragEventArgs args)
         {
-            if (Mediator is not null)
-            {
-                var dropMessageType = typeof(Drop<>).MakeGenericType(sender.GetType());
-                var dropMessage = Activator.CreateInstance(dropMessageType, args);
+            var dropMessageType = typeof(Drag<>).MakeGenericType(sender.GetType());
+            return Activator.CreateInstance(dropMessageType, args);
+        }
 
-                Mediator.HandleAsync(dropMessage);            
-            }
+        private object CreateDropMessage(object sender, DragEventArgs args)
+        {
+            var dropMessageType = typeof(Drop<>).MakeGenericType(sender.GetType());
+            return Activator.CreateInstance(dropMessageType, args);
         }
 
         private void OnDragOver(object sender, DragEventArgs args)
         {
-            args.AcceptedOperation = DataPackageOperation.Link;
+            if (Mediator is not null)
+            {
+                var message = CreateDragMessage(sender, args);
+                Mediator.HandleAsync(message);
+            }
+        }
+
+        private void OnDrop(object sender, DragEventArgs args)
+        {
+            if (Mediator is not null)
+            {
+                var message = CreateDropMessage(sender, args);
+                Mediator.HandleAsync(message);
+            }
         }
     }
 }

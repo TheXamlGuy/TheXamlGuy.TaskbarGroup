@@ -64,6 +64,7 @@ namespace TheXamlGuy.TaskbarGroup
                 flyout.ShowAt(placement);
             }
 
+            window.Show();
             window.Activate();
         }
     }
