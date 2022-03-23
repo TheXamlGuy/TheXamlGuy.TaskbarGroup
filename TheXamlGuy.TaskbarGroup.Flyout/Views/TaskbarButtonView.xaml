@@ -1,0 +1,13 @@
+﻿<UserControl
+    x:Class="TheXamlGuy.TaskbarGroup.Flyout.TaskbarButtonView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border>
+        <ContentControl
+            Margin="12"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Content="{x:Bind ViewModel.TaskbarButtonGroupViewModel}"
+            ContentTemplateSelector="{x:Bind ViewModel.TemplateSelector}" />
+    </Border>
+</UserControl>
