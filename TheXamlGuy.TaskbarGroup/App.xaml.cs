@@ -41,9 +41,10 @@ namespace TheXamlGuy.TaskbarGroup
                 .AddTransient<TaskbarButtonView>()
                 .AddTransient<TaskbarButtonViewModel>()
                 .AddTransient<TaskbarButtonGroupView>()
-                .AddAsyncHandler<TaskbarButtonGroupDragHandler>()
-                .AddAsyncHandler<TaskbarButtonGroupDropHandler>()
-                .AddTransient<TaskbarButtonGroupViewModel>();
+                .AddHandler<TaskbarButtonGroupDragHandler>()
+                .AddHandler<TaskbarButtonGroupDropHandler>()
+                .AddTransient<TaskbarButtonGroupViewModel>()
+                .AddHandler<IconStorageHandler>();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace TheXamlGuy.TaskbarGroup.Flyout
 {
     public class TaskbarButtonGroupDragHandler : IDragHandler<TaskbarButtonGroupView>
     {
-        public Task Handle(Drag<TaskbarButtonGroupView> message, CancellationToken canellationToken = default)
+        public void Handle(Drag<TaskbarButtonGroupView> message)
         {
             message.DragEventArgs.AcceptedOperation = DataPackageOperation.Link;
 
@@ -17,8 +17,6 @@ namespace TheXamlGuy.TaskbarGroup.Flyout
                 message.DragEventArgs.DragUIOverride.IsGlyphVisible = false;
                 message.DragEventArgs.DragUIOverride.IsCaptionVisible = false;
             }
-
-            return Task.CompletedTask;
         }
     }
 }

@@ -130,6 +130,7 @@
     <Compile Include="IDragHandler.cs" />
     <Compile Include="IDropHandler.cs" />
     <Compile Include="IServiceCollectionExtensions.cs" />
+    <Compile Include="IStorageItemExtensions.cs" />
     <Compile Include="IWindowPrivate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateSelector.cs" />

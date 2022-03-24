@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xaml.Interactivity;
 using System;
 using TheXamlGuy.TaskbarGroup.Core;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Xaml;
 
 namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
@@ -30,24 +29,19 @@ namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
             base.OnAttached();
         }
 
-        private object CreateDragMessage(object sender, DragEventArgs args)
+        protected override void OnDetaching()
         {
-            var dropMessageType = typeof(Drag<>).MakeGenericType(sender.GetType());
-            return Activator.CreateInstance(dropMessageType, args);
-        }
+            AssociatedObject.DragOver -= OnDragOver;
+            AssociatedObject.Drop -= OnDrop;
 
-        private object CreateDropMessage(object sender, DragEventArgs args)
-        {
-            var dropMessageType = typeof(Drop<>).MakeGenericType(sender.GetType());
-            return Activator.CreateInstance(dropMessageType, args);
+            base.OnDetaching();
         }
 
         private void OnDragOver(object sender, DragEventArgs args)
         {
             if (Mediator is not null)
             {
-                var message = CreateDragMessage(sender, args);
-                Mediator.HandleAsync(message);
+                Mediator.Handle(Activator.CreateInstance(typeof(Drag<>).MakeGenericType(sender.GetType()), args));
             }
         }
 
@@ -55,8 +49,7 @@ namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
         {
             if (Mediator is not null)
             {
-                var message = CreateDropMessage(sender, args);
-                Mediator.HandleAsync(message);
+                Mediator.Handle(Activator.CreateInstance(typeof(Drop<>).MakeGenericType(sender.GetType()), args));
             }
         }
     }

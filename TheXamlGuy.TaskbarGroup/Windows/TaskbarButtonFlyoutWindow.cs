@@ -8,7 +8,6 @@ namespace TheXamlGuy.TaskbarGroup
 {
     public class TaskbarButtonFlyoutWindow : TransparentXamlWindow<TaskbarButtonFlyout>
     {
-
         public TaskbarButtonFlyoutWindow()
         {
             Deactivated += OnDeactivated;

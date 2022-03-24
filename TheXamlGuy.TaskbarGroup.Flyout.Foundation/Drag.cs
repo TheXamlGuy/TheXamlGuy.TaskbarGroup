@@ -2,8 +2,5 @@
 
 namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
 {
-    public record class Drag<TTarget>(DragEventArgs DragEventArgs) where TTarget : UIElement
-    {
-        public TTarget Target { get; }
-    }
+    public record class Drag<TTarget>(DragEventArgs DragEventArgs) where TTarget : UIElement;
 }

@@ -3,7 +3,7 @@ using Windows.UI.Xaml;
 
 namespace TheXamlGuy.TaskbarGroup.Flyout.Foundation
 {
-    public interface IDropHandler<TTarget> : IAsyncMessageHandler<Drop<TTarget>> where TTarget : UIElement
+    public interface IDropHandler<TTarget> : IMessageHandler<Drop<TTarget>> where TTarget : UIElement
     {
 
     }
