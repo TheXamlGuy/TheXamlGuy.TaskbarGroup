@@ -5,7 +5,9 @@
 		<UseWPF>true</UseWPF>
 		<StartupObject>TheXamlGuy.TaskbarGroup.Program</StartupObject>
 		<AssetTargetFallback>uap10.0.19041</AssetTargetFallback>
+		<TargetPlatformVersion>10.0.19041</TargetPlatformVersion>
 		<Platforms>x64;x86</Platforms>
+		<RuntimeIdentifiers>win10-x64;win10-x86</RuntimeIdentifiers>
 		<LangVersion>10.0</LangVersion>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
