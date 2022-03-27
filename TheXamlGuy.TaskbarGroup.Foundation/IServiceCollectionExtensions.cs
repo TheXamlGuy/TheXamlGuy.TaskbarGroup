@@ -11,8 +11,7 @@ namespace TheXamlGuy.TaskbarGroup.Foundation
                 .AddSingleton<TemplateSelector>()
                 .AddSingleton<IDataTemplateCollection>(new DataTemplateCollection(new Dictionary<Type, Type>()))
                 .AddSingleton<DataTemplateFactory>()
-                .AddSingleton<IDispatcherTimerFactory, DispatcherTimerFactory>()
-                .AddTransient<FileDropTarget>();
+                .AddSingleton<IDispatcherTimerFactory, DispatcherTimerFactory>();
         }
     }
 }

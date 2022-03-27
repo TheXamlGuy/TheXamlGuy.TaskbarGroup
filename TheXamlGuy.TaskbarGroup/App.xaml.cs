@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using TheXamlGuy.TaskbarGroup.Core;
 using TheXamlGuy.TaskbarGroup.Flyout;
@@ -19,7 +20,10 @@ namespace TheXamlGuy.TaskbarGroup
             host = new HostBuilder()
                 .UseContentRoot(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                             "TheXamlGuy", "TaskbarGroup"), true)
-                .ConfigureServices(ConfigureServices)
+              .ConfigureAppConfiguration(configuration =>
+              {
+                  configuration.AddWritableJsonFile("Settings.json", false, true, Assembly.GetExecutingAssembly().ExtractResource("Settings.json"));
+              }).ConfigureServices(ConfigureServices)
                 .Build();
 
             await host.StartAsync();

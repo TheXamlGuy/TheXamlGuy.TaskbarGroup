@@ -1,5 +1,6 @@
 ﻿namespace TheXamlGuy.TaskbarGroup.Core
 {
+
     public static class Class1
     {
         public static void Test(Stream s)

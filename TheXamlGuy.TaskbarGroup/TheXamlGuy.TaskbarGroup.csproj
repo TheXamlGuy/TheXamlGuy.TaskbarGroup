@@ -12,6 +12,9 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Settings.json" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Toolkit.Wpf.UI.XamlHost" Version="6.1.2" />
@@ -21,6 +24,9 @@
 		<ProjectReference Include="..\TheXamlGuy.TaskbarGroup.Flyout.Foundation\TheXamlGuy.TaskbarGroup.Flyout.Foundation.csproj" />
 		<ProjectReference Include="..\TheXamlGuy.TaskbarGroup.Flyout\TheXamlGuy.TaskbarGroup.Flyout.csproj" />
 		<ProjectReference Include="..\TheXamlGuy.TaskbarGroup.Foundation\TheXamlGuy.TaskbarGroup.Foundation.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Settings.json" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Update="Microsoft.VCRTForwarders.140" Version="1.0.7" />
