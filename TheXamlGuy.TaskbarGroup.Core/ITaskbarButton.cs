@@ -2,7 +2,7 @@
 {
     public interface ITaskbarButton : IDisposable
     {
-        TaskbarButtonBounds Bounds { get; }
+        Rect Rect { get; }
 
         string Name { get; }
     }

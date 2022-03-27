@@ -4,27 +4,34 @@ using System.Diagnostics;
 
 namespace TheXamlGuy.TaskbarGroup.Core
 {
+
     public class TaskbarButtonMonitor : ITaskbarButtonMonitor
     {
         private readonly IDispatcherTimer dispatcherTimer;
         private readonly IDispatcherTimerFactory dispatcherTimerFactory;
-        private readonly IServiceFactory serviceFactory;
+        private readonly ITaskbarList taskbarList;
         private readonly IMessenger messenger;
+        private readonly IServiceFactory serviceFactory;
+        private readonly IDisposer disposer;
         private readonly Dictionary<string, TaskbarButton> taskbarButtons = new();
-        private RECT taskbarBoundsCache;
+        private Rect? taskbarRectCache;
         private IUIAutomationCondition? taskListCondition;
         private IUIAutomationElement? taskListElement;
-        private HWND taskListHandle;
+        private IntPtr taskListHandle;
 
-        public TaskbarButtonMonitor(IMessenger messenger, 
+        public TaskbarButtonMonitor(ITaskbarList taskbarList,
+            IMessenger messenger, 
             IDispatcherTimerFactory dispatcherTimerFactory,
-            IServiceFactory serviceFactory)
+            IServiceFactory serviceFactory,
+            IDisposer disposer)
         {
+            this.taskbarList = taskbarList;
             this.messenger = messenger;
             this.dispatcherTimerFactory = dispatcherTimerFactory;
             this.serviceFactory = serviceFactory;
+            this.disposer = disposer;
 
-            dispatcherTimer = dispatcherTimerFactory.Create(OnDispatcher, TimeSpan.FromMilliseconds(500));
+            disposer.Add(this, dispatcherTimer = dispatcherTimerFactory.Create(OnDispatcher, TimeSpan.FromMilliseconds(500)));
         }
 
         public void Initialize()
@@ -32,17 +39,12 @@ namespace TheXamlGuy.TaskbarGroup.Core
             var clientUIAutomation = new CUIAutomation();
             taskListCondition = clientUIAutomation.CreateTrueCondition();
 
-            var trayHandle = WindowHelper.Find("Shell_TrayWnd");
-
-            var rebarHandle = WindowHelper.Find("ReBarWindow32", trayHandle);
-            var taskHandle = WindowHelper.Find("MSTaskSwWClass", rebarHandle);
-            taskListHandle = WindowHelper.Find("MSTaskListWClass", taskHandle);
-
+            taskListHandle = taskbarList.GetHandle();
             taskListElement = clientUIAutomation.ElementFromHandle(taskListHandle);
 
-            if (WindowHelper.TryGetBounds(taskListHandle, out var bounds))
+            if (WindowHelper.TryGetBounds(taskListHandle, out var rect))
             {
-                taskbarBoundsCache = bounds;
+                taskbarRectCache = rect;
             }
 
             dispatcherTimer.Start();
@@ -51,17 +53,11 @@ namespace TheXamlGuy.TaskbarGroup.Core
 
         private bool CheckDirtyTaskbarRegion()
         {
-            if (WindowHelper.TryGetBounds(taskListHandle, out var bounds))
+            if (WindowHelper.TryGetBounds(taskListHandle, out var rect))
             {
-                var width = taskbarBoundsCache.right - taskbarBoundsCache.left;
-                var height = taskbarBoundsCache.bottom - taskbarBoundsCache.top;
-
-                var deltaWidth = bounds.right - bounds.left;
-                var deltaHeight = bounds.bottom - bounds.top;
-
-                if (width != deltaWidth || height != deltaHeight)
+                if (taskbarRectCache?.Width != rect.Width || taskbarRectCache?.Height != rect.Height)
                 {
-                    taskbarBoundsCache = bounds;
+                    taskbarRectCache = rect;
                     return true;
                 }
             }
@@ -76,7 +72,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
             var buttons = new Dictionary<string, tagRECT>();
             if (taskElements is not null)
             {
-                for (int index = 0; index <= taskElements.Length - 1; index++)
+                for (var index = 0; index <= taskElements.Length - 1; index++)
                 {
                     var taskUIElement = taskElements.GetElement(index);
                     var name = taskUIElement.CurrentName;
@@ -128,7 +124,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
                 var name = button.Key;
                 var bounds = button.Value;
 
-                var buttonBounds = new TaskbarButtonBounds(bounds.left,
+                var rect = new Rect(bounds.left,
                     bounds.top,
                     bounds.right - bounds.left,
                     bounds.bottom - bounds.top);
@@ -137,14 +133,14 @@ namespace TheXamlGuy.TaskbarGroup.Core
                 {
                     Debug.WriteLine($"{name} button updated");
 
-                    taskbarButtons[name].Bounds = buttonBounds;
+                    taskbarButtons[name].Rect = rect;
                     messenger.Send(new TaskbarButtonUpdated(taskbarButtons[name]));
                 }
                 else
                 {
                     Debug.WriteLine($"{name} button added");
 
-                    taskbarButtons.Add(name, serviceFactory.Create<TaskbarButton>(name, buttonBounds));
+                    taskbarButtons.Add(name, serviceFactory.Create<TaskbarButton>(name, rect));
                     messenger.Send(new TaskbarButtonCreated(taskbarButtons[name]));
                 }
             }

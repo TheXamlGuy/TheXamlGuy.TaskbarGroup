@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Threading;
 using TheXamlGuy.TaskbarGroup.Core;
 using TheXamlGuy.TaskbarGroup.Flyout.Controls;
@@ -23,8 +24,14 @@ namespace TheXamlGuy.TaskbarGroup
                 Hide();
             }), DispatcherPriority.ContextIdle, null);
 
+            messenger.Subscribe<TaskbarDragEnter>(OnTaskbarDragEnter);
             messenger.Subscribe<TaskbarButtonInvoked>(OnTaskbarButtonInvoked);
             messenger.Subscribe<TaskbarButtonDragEnter>(OnTaskbarButtonDragEnter);
+        }
+
+        private void OnTaskbarDragEnter(TaskbarDragEnter obj)
+        {
+            Debug.WriteLine("fff");
         }
 
         protected override void OnDeactivated(EventArgs args)
@@ -52,6 +59,5 @@ namespace TheXamlGuy.TaskbarGroup
         {
             Dispatcher.Invoke(() => Open(args.Button));
         }
-
     }
 }

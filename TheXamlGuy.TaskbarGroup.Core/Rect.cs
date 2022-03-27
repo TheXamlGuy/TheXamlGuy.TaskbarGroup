@@ -1,13 +1,13 @@
 ﻿namespace TheXamlGuy.TaskbarGroup.Core
 {
-    public record TaskbarButtonBounds
+    public record Rect
     {
-        public TaskbarButtonBounds()
+        public Rect()
         {
 
         }
 
-        public TaskbarButtonBounds(int x, int y, int width, int height)
+        public Rect(int x, int y, int width, int height)
         {
             X = x;
             Y = y;

@@ -1,8 +1,9 @@
-﻿
-namespace TheXamlGuy.TaskbarGroup.Core
+﻿namespace TheXamlGuy.TaskbarGroup.Core
 {
-    public interface ITaskbar
+    public interface ITaskbar : IInitializable, IDisposable
     {
         TaskbarState GetCurrentState();
+
+        IntPtr GetHandle();
     }
 }

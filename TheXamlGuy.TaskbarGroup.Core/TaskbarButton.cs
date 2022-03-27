@@ -7,22 +7,22 @@
         private bool isWithinBounds;
         private bool isDrag;
 
-        public TaskbarButton(IMessenger messenger,
-            IDisposer disposer,
-            string name, 
-            TaskbarButtonBounds bounds)
+        public TaskbarButton(string name,
+            Rect rect,
+            IMessenger messenger,
+            IDisposer disposer)
         {
             this.messenger = messenger;
             this.disposer = disposer;
             Name = name;
-            Bounds = bounds;
+            Rect = rect;
 
             disposer.Add(this, messenger.Subscribe<PointerReleased>(OnPointerReleased));
             disposer.Add(this, messenger.Subscribe<PointerMoved>(OnPointerMoved));
             disposer.Add(this, messenger.Subscribe<PointerDrag>(OnPointerDrag));
         }
 
-        public TaskbarButtonBounds Bounds { get; internal set; }
+        public Rect Rect { get; internal set; }
 
         public string Name { get; internal set; }
 
@@ -30,21 +30,6 @@
         {
             disposer.Dispose(this);
             GC.SuppressFinalize(this);
-        }
-
-        private bool IsWithinBounds(PointerLocation args)
-        {
-            if (args.X >= Bounds.X
-                && args.X <= Bounds.X + Bounds.Width
-                && args.Y >= Bounds.Y
-                && args.Y <= Bounds.Y + Bounds.Height)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private void OnPointerDrag(PointerDrag args)
@@ -70,7 +55,7 @@
 
         private void OnPointerMoved(PointerMoved args)
         {
-            if (IsWithinBounds(args.Location))
+            if (args.Location.IsWithinBounds(Rect))
             {
                 if (isWithinBounds)
                 {
@@ -78,7 +63,7 @@
                 }
 
                 isWithinBounds = true;
-                messenger.Send(new TaskbarButtonEntered(this));
+                messenger.Send(new TaskbarButtonEnter(this));
             }
             else
             {

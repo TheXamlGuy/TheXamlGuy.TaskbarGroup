@@ -1,45 +1,37 @@
-﻿using System.Runtime.InteropServices;
-using Windows.Win32.Foundation;
+﻿using Windows.Win32;
 
 namespace TheXamlGuy.TaskbarGroup.Core
 {
-    public class Taskbar : ITaskbar
+    public partial class Taskbar : ITaskbar
     {
-        private const string ShellTrayHandleName = "Shell_TrayWnd";
+        private readonly IDisposer disposer;
+        private readonly IMessenger messenger;
+        private bool isDrag;
+        private bool isWithinBounds;
 
-        private enum AppBarEdge : uint
+        public Taskbar(IMessenger messenger,
+            IDisposer disposer)
         {
-            Left = 0,
-            Top = 1,
-            Right = 2,
-            Bottom = 3
+            this.messenger = messenger;
+            this.disposer = disposer;
         }
 
-        private enum AppBarMessage : uint
+        public void Dispose()
         {
-            New = 0x00000000,
-            Remove = 0x00000001,
-            QueryPos = 0x00000002,
-            SetPos = 0x00000003,
-            GetState = 0x00000004,
-            GetTaskbarPos = 0x00000005,
-            Activate = 0x00000006,
-            GetAutoHideBar = 0x00000007,
-            SetAutoHideBar = 0x00000008,
-            WindowPosChanged = 0x00000009,
-            SetState = 0x0000000A,
+            disposer.Dispose(this);
+            GC.SuppressFinalize(this);
         }
 
         public TaskbarState GetCurrentState()
         {
-            var handle = GetSystemTrayHandle();
+            var handle = GetHandle();
             var state = new TaskbarState
             {
                 Screen = Screen.FromHandle(handle)
             };
 
-            var appBarData = GetAppBarData(handle);
-            GetAppBarPosition(ref appBarData);
+            var appBarData = PInvoke.GetAppBarData(handle);
+            PInvoke.GetAppBarPosition(ref appBarData);
 
             state.Rect = appBarData.rect.ToRect();
             state.Placement = (TaskbarPlacement)appBarData.uEdge;
@@ -47,34 +39,77 @@ namespace TheXamlGuy.TaskbarGroup.Core
             return state;
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr DefWindowProcW(IntPtr handle, uint msg, IntPtr wParam, IntPtr lParam);
-
-        private static IntPtr GetSystemTrayHandle() => WindowHelper.Find(ShellTrayHandleName);
-
-        [DllImport("shell32.dll", SetLastError = true)]
-        private static extern IntPtr SHAppBarMessage(AppBarMessage dwMessage, ref AppBarData pData);
-
-        private AppBarData GetAppBarData(IntPtr handle)
+        public IntPtr GetHandle()
         {
-            return new AppBarData
-            {
-                cbSize = (uint)Marshal.SizeOf(typeof(AppBarData)),
-                hWnd = handle
-            };
+            return WindowHelper.Find("Shell_TrayWnd");
         }
 
-        private void GetAppBarPosition(ref AppBarData appBarData) => SHAppBarMessage(AppBarMessage.GetTaskbarPos, ref appBarData);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct AppBarData
+        public void Initialize()
         {
-            public uint cbSize;
-            public IntPtr hWnd;
-            public uint uCallbackMessage;
-            public AppBarEdge uEdge;
-            public RECT rect;
-            public int lParam;
+            disposer.Add(this, messenger.Subscribe<WndProc>(OnWndProc));
+            disposer.Add(this, messenger.Subscribe<PointerReleased>(OnPointerReleased));
+            disposer.Add(this, messenger.Subscribe<PointerMoved>(OnPointerMoved));
+            disposer.Add(this, messenger.Subscribe<PointerDrag>(OnPointerDrag));
+        }
+
+        private void OnPointerDrag(PointerDrag args)
+        {
+            if (isWithinBounds)
+            {
+                if (isDrag)
+                {
+                    messenger.Send<TaskbarDragOver>();
+                }
+                else
+                {
+                    messenger.Send<TaskbarDragEnter>();
+                }
+
+                isDrag = true;
+            }
+            else
+            {
+                isDrag = false;
+            }
+        }
+
+        private void OnPointerMoved(PointerMoved args)
+        {
+            var taskbarHandle = GetHandle();
+            if (WindowHelper.TryGetBounds(taskbarHandle, out var rect))
+            {
+                if (args.Location.IsWithinBounds(rect))
+                {
+                    if (isWithinBounds)
+                    {
+                        return;
+                    }
+
+                    isWithinBounds = true;
+                    messenger.Send<TaskbarEnter>();
+                }
+                else
+                {
+                    isDrag = false;
+                    isWithinBounds = false;
+                }
+            }
+        }
+
+        private void OnPointerReleased(PointerReleased args)
+        {
+            if (isDrag)
+            {
+                isDrag = false;
+            }
+        }
+
+        private void OnWndProc(WndProc args)
+        {
+            if (args.Message == PInvoke.WM_TASKBARCREATED || args.Message == (int)WndProcMessages.WM_SETTINGCHANGE && (int)args.WParam == PInvoke.SPI_SETWORKAREA)
+            {
+                messenger.Send<TaskbarChanged>();
+            }
         }
     }
 }

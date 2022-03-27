@@ -10,21 +10,21 @@ namespace TheXamlGuy.TaskbarGroup.Core
     {
         private const int SPI_GETWORKAREA = 48;
 
-        public static Rect VirtualScreen => GetVirtualScreen();
-        public static Rect WorkingArea => GetWorkingArea();
+        public static Windows.Foundation.Rect VirtualScreen => GetVirtualScreen();
+        public static Windows.Foundation.Rect WorkingArea => GetWorkingArea();
 
-        private static Rect GetVirtualScreen()
+        private static Windows.Foundation.Rect GetVirtualScreen()
         {
             var size = new Size(PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSCREEN), PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSCREEN));
-            return new Rect(0, 0, size.Width, size.Height);
+            return new Windows.Foundation.Rect(0, 0, size.Width, size.Height);
         }
 
-        private static Rect GetWorkingArea()
+        private static Windows.Foundation.Rect GetWorkingArea()
         {
             var rect = new RECT();
 
             SystemParametersInfo(SPI_GETWORKAREA, 0, ref rect, 0);
-            return new Rect(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+            return new Windows.Foundation.Rect(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]

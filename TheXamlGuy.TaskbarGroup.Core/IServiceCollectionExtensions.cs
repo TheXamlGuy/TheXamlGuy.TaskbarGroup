@@ -2,6 +2,23 @@
 
 namespace TheXamlGuy.TaskbarGroup.Core
 {
+    public static class PointerLocationExtensions
+    {
+        public static bool IsWithinBounds(this PointerLocation args, Rect bounds)
+        {
+            if (args.X >= bounds.X
+                && args.X <= bounds.X + bounds.Width
+                && args.Y >= bounds.Y
+                && args.Y <= bounds.Y + bounds.Height)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
     public static class IServiceCollectionExtensions
     {
         public static IServiceCollection AddAsyncHandler<TAsyncMessageHandle>(this IServiceCollection serviceCollection)
@@ -55,11 +72,12 @@ namespace TheXamlGuy.TaskbarGroup.Core
                 .AddSingleton<IMessageInvoker, MessageInvoker>()
                 .AddSingleton<IMessenger, Messenger>()
                 .AddSingleton<IMediator, Mediator>()
-                .AddSingleton<IInitializable, WndProcMonitor>()
+                .AddSingleton<IWndProcMonitor, WndProcMonitor>()
                 .AddSingleton<ITaskbar, Taskbar>()
-                .AddSingleton<IInitializable, TaskbarMonitor>()
-                .AddSingleton<IInitializable, PointerMonitor>()
-                .AddSingleton<IInitializable, TaskbarButtonMonitor>();
+                .AddSingleton<ITaskbarList, TaskbarList>()
+                .AddSingleton<IPointerMonitor, PointerMonitor>()
+                .AddSingleton<ITaskbarButtonMonitor, TaskbarButtonMonitor>()
+                .AddSingleton<ITaskbarButtonShortcutMonitor, TaskbarButtonShortcutMonitor>();
         }
     }
 }

@@ -8,15 +8,24 @@ namespace TheXamlGuy.TaskbarGroup
 {
     public sealed class ApplicationHost : IHostedService
     {
-        private readonly TaskbarButtonFlyoutWindow flyoutWindow;
-        private readonly IEnumerable<IInitializable> initializables;
+        private readonly IMediator mediator;
+        private readonly List<IInitializable> initializables = new();
         private bool isInitialized;
 
-        public ApplicationHost(IEnumerable<IInitializable> initializables,
-            TaskbarButtonFlyoutWindow flyoutWindow)
+        public ApplicationHost(IWndProcMonitor wndProcMonitor,
+            ITaskbar taskbar,
+            IPointerMonitor pointerMonitor,
+            ITaskbarButtonMonitor taskbarButtonMonitor,
+            ITaskbarButtonShortcutMonitor taskbarButtonShortcutMonitor,
+            IMediator mediator)
         {
-            this.initializables = initializables;
-            this.flyoutWindow = flyoutWindow;
+            initializables.Add(wndProcMonitor);
+            initializables.Add(taskbar);
+            initializables.Add(pointerMonitor);
+            initializables.Add(taskbarButtonMonitor);
+            initializables.Add(taskbarButtonShortcutMonitor);
+
+            this.mediator = mediator;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -26,7 +35,6 @@ namespace TheXamlGuy.TaskbarGroup
 
             isInitialized = true;
         }
-
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
@@ -50,7 +58,7 @@ namespace TheXamlGuy.TaskbarGroup
         {
             if (!isInitialized)
             {
-                flyoutWindow.Show();
+                mediator.Handle<TaskbarButtonFlyoutWindowActivation>();
                 await Task.CompletedTask;
             }
         }

@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using TheXamlGuy.TaskbarGroup.Core;
 using TheXamlGuy.TaskbarGroup.Flyout;
@@ -17,15 +16,11 @@ namespace TheXamlGuy.TaskbarGroup
 
         protected override async void OnStartup(StartupEventArgs args)
         {
-            var appLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-
-            host = Host.CreateDefaultBuilder()
-                    .ConfigureAppConfiguration(config =>
-                    {
-                        config.SetBasePath(appLocation);
-                    })
-                    .ConfigureServices(ConfigureServices)
-                    .Build();
+            host = new HostBuilder()
+                .UseContentRoot(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                            "TheXamlGuy", "TaskbarGroup"), true)
+                .ConfigureServices(ConfigureServices)
+                .Build();
 
             await host.StartAsync();
         }
@@ -36,6 +31,7 @@ namespace TheXamlGuy.TaskbarGroup
                 .AddRequiredCore()
                 .AddRequiredFoundation()
                 .AddRequiredFlyoutFoundation()
+                .AddHandler<TaskbarButtonFlyoutWindowActivationHandler>()
                 .AddHandler<TaskbarButtonFlyoutActivationHandler>()
                 .AddSingleton<TaskbarButtonFlyoutWindow>()
                 .AddTransient<TaskbarButtonView>()

@@ -49,8 +49,8 @@ namespace TheXamlGuy.TaskbarGroup
 
                 case TaskbarPlacement.Bottom:
                     placement = TaskbarButtonFlyoutPlacement.Bottom;
-                    window.Left = ((button.Bounds.X + (button.Bounds.Width / 2)) / dpiX) - (window.Width / 2);
-                    window.Top = (button.Bounds.Y / dpiY) - window.Height;
+                    window.Left = ((button.Rect.X + (button.Rect.Width / 2)) / dpiX) - (window.Width / 2);
+                    window.Top = (button.Rect.Y / dpiY) - window.Height;
                     break;
             }
 

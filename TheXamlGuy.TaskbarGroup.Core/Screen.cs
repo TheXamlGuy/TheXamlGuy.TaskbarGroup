@@ -32,7 +32,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
             {
                 var monitorData = GetMonitorData(monitorHandle);
 
-                Bounds = new Rect(monitorData.MonitorRect.left, monitorData.MonitorRect.top, monitorData.MonitorRect.right - monitorData.MonitorRect.left, monitorData.MonitorRect.bottom - monitorData.MonitorRect.top);
+                Bounds = new Windows.Foundation.Rect(monitorData.MonitorRect.left, monitorData.MonitorRect.top, monitorData.MonitorRect.right - monitorData.MonitorRect.left, monitorData.MonitorRect.bottom - monitorData.MonitorRect.top);
                 Primary = (monitorData.Flags & (int)MonitorFlag.MONITOR_DEFAULTTOPRIMARY) != 0;
                 DeviceName = monitorData.DeviceName;
             }
@@ -47,13 +47,13 @@ namespace TheXamlGuy.TaskbarGroup.Core
             MONITOR_DEFAULTTONEAREST = 2
         }
 
-        public Rect Bounds { get; }
+        public Windows.Foundation.Rect Bounds { get; }
 
         public string DeviceName { get; }
 
         public bool Primary { get; }
 
-        public Rect WorkingArea => GetWorkingArea();
+        public Windows.Foundation.Rect WorkingArea => GetWorkingArea();
 
         public static Screen FromHandle(IntPtr handle)
         {
@@ -83,7 +83,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
             return monitorData;
         }
 
-        private Rect GetWorkingArea()
+        private Windows.Foundation.Rect GetWorkingArea()
         {
             if (!_multiMonitorSupport || _monitorHandle == (IntPtr)PRIMARY_MONITOR)
             {
@@ -91,7 +91,7 @@ namespace TheXamlGuy.TaskbarGroup.Core
             }
 
             var monitorData = GetMonitorData(_monitorHandle);
-            return new Rect(monitorData.WorkAreaRect.left, monitorData.WorkAreaRect.top, monitorData.WorkAreaRect.right - monitorData.WorkAreaRect.left, monitorData.WorkAreaRect.bottom - monitorData.WorkAreaRect.top);
+            return new Windows.Foundation.Rect(monitorData.WorkAreaRect.left, monitorData.WorkAreaRect.top, monitorData.WorkAreaRect.right - monitorData.WorkAreaRect.left, monitorData.WorkAreaRect.bottom - monitorData.WorkAreaRect.top);
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]

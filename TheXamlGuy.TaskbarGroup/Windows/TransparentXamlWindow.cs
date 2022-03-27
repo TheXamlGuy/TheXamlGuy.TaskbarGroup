@@ -6,20 +6,18 @@ namespace TheXamlGuy.TaskbarGroup
 {
     public class TransparentXamlWindow<TXamlContent> : XamlWindow<TXamlContent> where TXamlContent : Windows.UI.Xaml.UIElement
     {
-        public TransparentXamlWindow() => PrepareDefaultWindow();
-
-        protected override WindowsXamlHost OnInitializing(WindowsXamlHost xamlHost)
-        {
-            return base.OnInitializing(xamlHost);
-        }
-
-        private void PrepareDefaultWindow()
+        public TransparentXamlWindow()
         {
             ShowInTaskbar = false;
             WindowStyle = WindowStyle.None;
             ResizeMode = ResizeMode.NoResize;
             AllowsTransparency = true;
             Background = new SolidColorBrush(Colors.Transparent);
+        }
+
+        protected override WindowsXamlHost OnInitializing(WindowsXamlHost xamlHost)
+        {
+            return base.OnInitializing(xamlHost);
         }
     }
 }
